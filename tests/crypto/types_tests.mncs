@@ -1,0 +1,47 @@
+mncs 0.18;
+
+// Proofs of mncs.crypto.types: algorithm codes are stable, error codes
+// are dense, bounds are the documented limits.
+module tests.crypto.types_tests;
+
+use mncs.crypto.types;
+use mncs.test.assertions;
+use mncs.test.suite;
+
+test alg_codes_are_stable() -> (result: TestResult) {
+    let a: bool = hash_alg_code(HashAlg.Sha256) == 1;
+    let b: bool = a && mac_alg_code(MacAlg.HmacSha256) == 1;
+    let c: bool = b && kdf_alg_code(KdfAlg.HkdfSha256) == 1;
+    let d: bool = c && sig_alg_code(SigAlg.Ed25519) == 1;
+    return from_assertion(equals_bool(true, d, 8101));
+}
+
+test error_codes_are_dense() -> (result: TestResult) {
+    let a: bool = error_code(CryptoError.Ok) == 0;
+    let b: bool = a && error_code(CryptoError.MessageTooLong) == 1;
+    let c: bool = b && error_code(CryptoError.KeyTooLong) == 2;
+    let d: bool = c && error_code(CryptoError.EntropyExhausted) == 6;
+    let e: bool = d && error_code(CryptoError.MalformedHex) == 8;
+    let f: bool = e && error_code(CryptoError.UnsupportedCapability) == 11;
+    return from_assertion(equals_bool(true, f, 8102));
+}
+
+test bounds_match_documented_limits() -> (result: TestResult) {
+    let a: bool = max_message_bytes() == 192;
+    let b: bool = a && max_key_bytes() == 256;
+    let c: bool = b && max_output_bytes() == 128;
+    let d: bool = c && max_verify_message_bytes() == 64;
+    return from_assertion(equals_bool(true, d, 8103));
+}
+
+test constructors_label_algorithms() -> (result: TestResult) {
+    let key_bytes: [byte; up_to 256] = [11, 22, 33];
+    let key: HmacKey = hmac_key(key_bytes);
+    let a: bool = mac_alg_code(key.algorithm) == 1;
+    let sig_bytes: [byte; 64] = [0; 64];
+    let sig: Signature = signature(sig_bytes);
+    let b: bool = a && sig_alg_code(sig.algorithm) == 1;
+    let dg: Digest = digest([0; 32]);
+    let c: bool = b && hash_alg_code(dg.algorithm) == 1;
+    return from_assertion(equals_bool(true, c, 8104));
+}

@@ -1,0 +1,2353 @@
+{
+ "schema_version": "0.1",
+ "name": "crypto-hmac",
+ "cases": [
+  {
+   "id": "hmac-tc1",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.crypto.hmac",
+     "function": "hmac_sha256_bytes"
+    },
+    "arguments": [
+     {
+      "sequence": {
+       "values": [
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        }
+       ]
+      }
+     },
+     {
+      "sequence": {
+       "values": [
+        {
+         "byte": {
+          "value": 72
+         }
+        },
+        {
+         "byte": {
+          "value": 105
+         }
+        },
+        {
+         "byte": {
+          "value": 32
+         }
+        },
+        {
+         "byte": {
+          "value": 84
+         }
+        },
+        {
+         "byte": {
+          "value": 104
+         }
+        },
+        {
+         "byte": {
+          "value": 101
+         }
+        },
+        {
+         "byte": {
+          "value": 114
+         }
+        },
+        {
+         "byte": {
+          "value": 101
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "step_budget": 2000000
+   },
+   "expected": [
+    {
+     "sequence": {
+      "values": [
+       {
+        "byte": {
+         "value": 176
+        }
+       },
+       {
+        "byte": {
+         "value": 52
+        }
+       },
+       {
+        "byte": {
+         "value": 76
+        }
+       },
+       {
+        "byte": {
+         "value": 97
+        }
+       },
+       {
+        "byte": {
+         "value": 216
+        }
+       },
+       {
+        "byte": {
+         "value": 219
+        }
+       },
+       {
+        "byte": {
+         "value": 56
+        }
+       },
+       {
+        "byte": {
+         "value": 83
+        }
+       },
+       {
+        "byte": {
+         "value": 92
+        }
+       },
+       {
+        "byte": {
+         "value": 168
+        }
+       },
+       {
+        "byte": {
+         "value": 175
+        }
+       },
+       {
+        "byte": {
+         "value": 206
+        }
+       },
+       {
+        "byte": {
+         "value": 175
+        }
+       },
+       {
+        "byte": {
+         "value": 11
+        }
+       },
+       {
+        "byte": {
+         "value": 241
+        }
+       },
+       {
+        "byte": {
+         "value": 43
+        }
+       },
+       {
+        "byte": {
+         "value": 136
+        }
+       },
+       {
+        "byte": {
+         "value": 29
+        }
+       },
+       {
+        "byte": {
+         "value": 194
+        }
+       },
+       {
+        "byte": {
+         "value": 0
+        }
+       },
+       {
+        "byte": {
+         "value": 201
+        }
+       },
+       {
+        "byte": {
+         "value": 131
+        }
+       },
+       {
+        "byte": {
+         "value": 61
+        }
+       },
+       {
+        "byte": {
+         "value": 167
+        }
+       },
+       {
+        "byte": {
+         "value": 38
+        }
+       },
+       {
+        "byte": {
+         "value": 233
+        }
+       },
+       {
+        "byte": {
+         "value": 55
+        }
+       },
+       {
+        "byte": {
+         "value": 108
+        }
+       },
+       {
+        "byte": {
+         "value": 46
+        }
+       },
+       {
+        "byte": {
+         "value": 50
+        }
+       },
+       {
+        "byte": {
+         "value": 207
+        }
+       },
+       {
+        "byte": {
+         "value": 247
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "hmac-tc2",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.crypto.hmac",
+     "function": "hmac_sha256_bytes"
+    },
+    "arguments": [
+     {
+      "sequence": {
+       "values": [
+        {
+         "byte": {
+          "value": 74
+         }
+        },
+        {
+         "byte": {
+          "value": 101
+         }
+        },
+        {
+         "byte": {
+          "value": 102
+         }
+        },
+        {
+         "byte": {
+          "value": 101
+         }
+        }
+       ]
+      }
+     },
+     {
+      "sequence": {
+       "values": [
+        {
+         "byte": {
+          "value": 119
+         }
+        },
+        {
+         "byte": {
+          "value": 104
+         }
+        },
+        {
+         "byte": {
+          "value": 97
+         }
+        },
+        {
+         "byte": {
+          "value": 116
+         }
+        },
+        {
+         "byte": {
+          "value": 32
+         }
+        },
+        {
+         "byte": {
+          "value": 100
+         }
+        },
+        {
+         "byte": {
+          "value": 111
+         }
+        },
+        {
+         "byte": {
+          "value": 32
+         }
+        },
+        {
+         "byte": {
+          "value": 121
+         }
+        },
+        {
+         "byte": {
+          "value": 97
+         }
+        },
+        {
+         "byte": {
+          "value": 32
+         }
+        },
+        {
+         "byte": {
+          "value": 119
+         }
+        },
+        {
+         "byte": {
+          "value": 97
+         }
+        },
+        {
+         "byte": {
+          "value": 110
+         }
+        },
+        {
+         "byte": {
+          "value": 116
+         }
+        },
+        {
+         "byte": {
+          "value": 32
+         }
+        },
+        {
+         "byte": {
+          "value": 102
+         }
+        },
+        {
+         "byte": {
+          "value": 111
+         }
+        },
+        {
+         "byte": {
+          "value": 114
+         }
+        },
+        {
+         "byte": {
+          "value": 32
+         }
+        },
+        {
+         "byte": {
+          "value": 110
+         }
+        },
+        {
+         "byte": {
+          "value": 111
+         }
+        },
+        {
+         "byte": {
+          "value": 116
+         }
+        },
+        {
+         "byte": {
+          "value": 104
+         }
+        },
+        {
+         "byte": {
+          "value": 105
+         }
+        },
+        {
+         "byte": {
+          "value": 110
+         }
+        },
+        {
+         "byte": {
+          "value": 103
+         }
+        },
+        {
+         "byte": {
+          "value": 63
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "step_budget": 2000000
+   },
+   "expected": [
+    {
+     "sequence": {
+      "values": [
+       {
+        "byte": {
+         "value": 91
+        }
+       },
+       {
+        "byte": {
+         "value": 220
+        }
+       },
+       {
+        "byte": {
+         "value": 193
+        }
+       },
+       {
+        "byte": {
+         "value": 70
+        }
+       },
+       {
+        "byte": {
+         "value": 191
+        }
+       },
+       {
+        "byte": {
+         "value": 96
+        }
+       },
+       {
+        "byte": {
+         "value": 117
+        }
+       },
+       {
+        "byte": {
+         "value": 78
+        }
+       },
+       {
+        "byte": {
+         "value": 106
+        }
+       },
+       {
+        "byte": {
+         "value": 4
+        }
+       },
+       {
+        "byte": {
+         "value": 36
+        }
+       },
+       {
+        "byte": {
+         "value": 38
+        }
+       },
+       {
+        "byte": {
+         "value": 8
+        }
+       },
+       {
+        "byte": {
+         "value": 149
+        }
+       },
+       {
+        "byte": {
+         "value": 117
+        }
+       },
+       {
+        "byte": {
+         "value": 199
+        }
+       },
+       {
+        "byte": {
+         "value": 90
+        }
+       },
+       {
+        "byte": {
+         "value": 0
+        }
+       },
+       {
+        "byte": {
+         "value": 63
+        }
+       },
+       {
+        "byte": {
+         "value": 8
+        }
+       },
+       {
+        "byte": {
+         "value": 157
+        }
+       },
+       {
+        "byte": {
+         "value": 39
+        }
+       },
+       {
+        "byte": {
+         "value": 57
+        }
+       },
+       {
+        "byte": {
+         "value": 131
+        }
+       },
+       {
+        "byte": {
+         "value": 157
+        }
+       },
+       {
+        "byte": {
+         "value": 236
+        }
+       },
+       {
+        "byte": {
+         "value": 88
+        }
+       },
+       {
+        "byte": {
+         "value": 185
+        }
+       },
+       {
+        "byte": {
+         "value": 100
+        }
+       },
+       {
+        "byte": {
+         "value": 236
+        }
+       },
+       {
+        "byte": {
+         "value": 56
+        }
+       },
+       {
+        "byte": {
+         "value": 67
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "hmac-tc3",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.crypto.hmac",
+     "function": "hmac_sha256_bytes"
+    },
+    "arguments": [
+     {
+      "sequence": {
+       "values": [
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        }
+       ]
+      }
+     },
+     {
+      "sequence": {
+       "values": [
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        },
+        {
+         "byte": {
+          "value": 221
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "step_budget": 2000000
+   },
+   "expected": [
+    {
+     "sequence": {
+      "values": [
+       {
+        "byte": {
+         "value": 119
+        }
+       },
+       {
+        "byte": {
+         "value": 62
+        }
+       },
+       {
+        "byte": {
+         "value": 169
+        }
+       },
+       {
+        "byte": {
+         "value": 30
+        }
+       },
+       {
+        "byte": {
+         "value": 54
+        }
+       },
+       {
+        "byte": {
+         "value": 128
+        }
+       },
+       {
+        "byte": {
+         "value": 14
+        }
+       },
+       {
+        "byte": {
+         "value": 70
+        }
+       },
+       {
+        "byte": {
+         "value": 133
+        }
+       },
+       {
+        "byte": {
+         "value": 77
+        }
+       },
+       {
+        "byte": {
+         "value": 184
+        }
+       },
+       {
+        "byte": {
+         "value": 235
+        }
+       },
+       {
+        "byte": {
+         "value": 208
+        }
+       },
+       {
+        "byte": {
+         "value": 145
+        }
+       },
+       {
+        "byte": {
+         "value": 129
+        }
+       },
+       {
+        "byte": {
+         "value": 167
+        }
+       },
+       {
+        "byte": {
+         "value": 41
+        }
+       },
+       {
+        "byte": {
+         "value": 89
+        }
+       },
+       {
+        "byte": {
+         "value": 9
+        }
+       },
+       {
+        "byte": {
+         "value": 139
+        }
+       },
+       {
+        "byte": {
+         "value": 62
+        }
+       },
+       {
+        "byte": {
+         "value": 248
+        }
+       },
+       {
+        "byte": {
+         "value": 193
+        }
+       },
+       {
+        "byte": {
+         "value": 34
+        }
+       },
+       {
+        "byte": {
+         "value": 217
+        }
+       },
+       {
+        "byte": {
+         "value": 99
+        }
+       },
+       {
+        "byte": {
+         "value": 85
+        }
+       },
+       {
+        "byte": {
+         "value": 20
+        }
+       },
+       {
+        "byte": {
+         "value": 206
+        }
+       },
+       {
+        "byte": {
+         "value": 213
+        }
+       },
+       {
+        "byte": {
+         "value": 101
+        }
+       },
+       {
+        "byte": {
+         "value": 254
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "hmac-tc6",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.crypto.hmac",
+     "function": "hmac_sha256_bytes"
+    },
+    "arguments": [
+     {
+      "sequence": {
+       "values": [
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        },
+        {
+         "byte": {
+          "value": 170
+         }
+        }
+       ]
+      }
+     },
+     {
+      "sequence": {
+       "values": [
+        {
+         "byte": {
+          "value": 84
+         }
+        },
+        {
+         "byte": {
+          "value": 101
+         }
+        },
+        {
+         "byte": {
+          "value": 115
+         }
+        },
+        {
+         "byte": {
+          "value": 116
+         }
+        },
+        {
+         "byte": {
+          "value": 32
+         }
+        },
+        {
+         "byte": {
+          "value": 85
+         }
+        },
+        {
+         "byte": {
+          "value": 115
+         }
+        },
+        {
+         "byte": {
+          "value": 105
+         }
+        },
+        {
+         "byte": {
+          "value": 110
+         }
+        },
+        {
+         "byte": {
+          "value": 103
+         }
+        },
+        {
+         "byte": {
+          "value": 32
+         }
+        },
+        {
+         "byte": {
+          "value": 76
+         }
+        },
+        {
+         "byte": {
+          "value": 97
+         }
+        },
+        {
+         "byte": {
+          "value": 114
+         }
+        },
+        {
+         "byte": {
+          "value": 103
+         }
+        },
+        {
+         "byte": {
+          "value": 101
+         }
+        },
+        {
+         "byte": {
+          "value": 114
+         }
+        },
+        {
+         "byte": {
+          "value": 32
+         }
+        },
+        {
+         "byte": {
+          "value": 84
+         }
+        },
+        {
+         "byte": {
+          "value": 104
+         }
+        },
+        {
+         "byte": {
+          "value": 97
+         }
+        },
+        {
+         "byte": {
+          "value": 110
+         }
+        },
+        {
+         "byte": {
+          "value": 32
+         }
+        },
+        {
+         "byte": {
+          "value": 66
+         }
+        },
+        {
+         "byte": {
+          "value": 108
+         }
+        },
+        {
+         "byte": {
+          "value": 111
+         }
+        },
+        {
+         "byte": {
+          "value": 99
+         }
+        },
+        {
+         "byte": {
+          "value": 107
+         }
+        },
+        {
+         "byte": {
+          "value": 45
+         }
+        },
+        {
+         "byte": {
+          "value": 83
+         }
+        },
+        {
+         "byte": {
+          "value": 105
+         }
+        },
+        {
+         "byte": {
+          "value": 122
+         }
+        },
+        {
+         "byte": {
+          "value": 101
+         }
+        },
+        {
+         "byte": {
+          "value": 32
+         }
+        },
+        {
+         "byte": {
+          "value": 75
+         }
+        },
+        {
+         "byte": {
+          "value": 101
+         }
+        },
+        {
+         "byte": {
+          "value": 121
+         }
+        },
+        {
+         "byte": {
+          "value": 32
+         }
+        },
+        {
+         "byte": {
+          "value": 45
+         }
+        },
+        {
+         "byte": {
+          "value": 32
+         }
+        },
+        {
+         "byte": {
+          "value": 72
+         }
+        },
+        {
+         "byte": {
+          "value": 97
+         }
+        },
+        {
+         "byte": {
+          "value": 115
+         }
+        },
+        {
+         "byte": {
+          "value": 104
+         }
+        },
+        {
+         "byte": {
+          "value": 32
+         }
+        },
+        {
+         "byte": {
+          "value": 75
+         }
+        },
+        {
+         "byte": {
+          "value": 101
+         }
+        },
+        {
+         "byte": {
+          "value": 121
+         }
+        },
+        {
+         "byte": {
+          "value": 32
+         }
+        },
+        {
+         "byte": {
+          "value": 70
+         }
+        },
+        {
+         "byte": {
+          "value": 105
+         }
+        },
+        {
+         "byte": {
+          "value": 114
+         }
+        },
+        {
+         "byte": {
+          "value": 115
+         }
+        },
+        {
+         "byte": {
+          "value": 116
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "step_budget": 2000000
+   },
+   "expected": [
+    {
+     "sequence": {
+      "values": [
+       {
+        "byte": {
+         "value": 96
+        }
+       },
+       {
+        "byte": {
+         "value": 228
+        }
+       },
+       {
+        "byte": {
+         "value": 49
+        }
+       },
+       {
+        "byte": {
+         "value": 89
+        }
+       },
+       {
+        "byte": {
+         "value": 30
+        }
+       },
+       {
+        "byte": {
+         "value": 224
+        }
+       },
+       {
+        "byte": {
+         "value": 182
+        }
+       },
+       {
+        "byte": {
+         "value": 127
+        }
+       },
+       {
+        "byte": {
+         "value": 13
+        }
+       },
+       {
+        "byte": {
+         "value": 138
+        }
+       },
+       {
+        "byte": {
+         "value": 38
+        }
+       },
+       {
+        "byte": {
+         "value": 170
+        }
+       },
+       {
+        "byte": {
+         "value": 203
+        }
+       },
+       {
+        "byte": {
+         "value": 245
+        }
+       },
+       {
+        "byte": {
+         "value": 183
+        }
+       },
+       {
+        "byte": {
+         "value": 127
+        }
+       },
+       {
+        "byte": {
+         "value": 142
+        }
+       },
+       {
+        "byte": {
+         "value": 11
+        }
+       },
+       {
+        "byte": {
+         "value": 198
+        }
+       },
+       {
+        "byte": {
+         "value": 33
+        }
+       },
+       {
+        "byte": {
+         "value": 55
+        }
+       },
+       {
+        "byte": {
+         "value": 40
+        }
+       },
+       {
+        "byte": {
+         "value": 197
+        }
+       },
+       {
+        "byte": {
+         "value": 20
+        }
+       },
+       {
+        "byte": {
+         "value": 5
+        }
+       },
+       {
+        "byte": {
+         "value": 70
+        }
+       },
+       {
+        "byte": {
+         "value": 4
+        }
+       },
+       {
+        "byte": {
+         "value": 15
+        }
+       },
+       {
+        "byte": {
+         "value": 14
+        }
+       },
+       {
+        "byte": {
+         "value": 227
+        }
+       },
+       {
+        "byte": {
+         "value": 127
+        }
+       },
+       {
+        "byte": {
+         "value": 84
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

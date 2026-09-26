@@ -1,0 +1,53 @@
+mncs 0.18;
+
+// mncs.crypto.random — deterministic test entropy with an explicit
+// production boundary.
+//
+// There is no operating-system CSPRNG grant in the current toolchain,
+// so this module offers no production secret generation and no function
+// whose name could suggest it. What it offers is the test side of the
+// randomness separation: an explicit, injectable, reproducible entropy
+// source for deterministic tests, plus the documented pressure for a
+// real backend (CRYPTO-PRESS-RNG in docs/LANGUAGE_PRESSURES.md).
+//
+// Do not use mncs.core.random (a transparent LCG) or this module's test
+// source for production keys, nonces, or salts. Tests that need
+// determinism take a TestEntropy value; production code must obtain
+// randomness from a vetted CSPRNG facility once the toolchain grants one.
+module mncs.crypto.random;
+
+use mncs.crypto.buffer as buffer;
+
+use mncs.crypto.types as types;
+
+// A finite, inspectable entropy stream for tests. The cursor only moves
+// forward; exhaustion is a structured error, never a silent repeat.
+record TestEntropy { stream: [byte; 256], length: u64, cursor: u64 }
+
+record Draw { ok: bool, error: types.CryptoError, bytes: [byte; 64], length: u64, next: TestEntropy }
+
+fn test_entropy(stream: [byte; up_to 256]) -> (result: TestEntropy) {
+    let length: u64 = select(stream.len <= 256, stream.len, 256);
+    return TestEntropy { stream: buffer.copy256(stream, length), length: length, cursor: 0 };
+}
+
+// Draw up to 64 bytes. Past the end, or past 64, the draw fails closed:
+// ok is false, bytes are zero, and the cursor does not move.
+fn draw(source: TestEntropy, count: u64) -> (result: Draw) {
+    let want: u64 = select(count <= 64, count, 64);
+    let available: bool = count <= 64 && source.cursor +% want <= source.length && source.cursor +% want <= 256;
+    let seed: [byte; 64] = [0; 64];
+    iterate i over seed carrying acc: [byte; 64] = seed {
+        let gi: u64 = source.cursor +% i;
+        let live: bool = available && i < want;
+        let di: u64 = select(live, gi, 0);
+        next acc = replace(acc, i, select(live, source.stream[di], 0));
+    }
+    return Draw {
+        ok: available,
+        error: select(count > 64, types.CryptoError.DrawTooLarge, select(available, types.CryptoError.Ok, types.CryptoError.EntropyExhausted)),
+        bytes: acc,
+        length: select(available, want, 0),
+        next: TestEntropy { stream: source.stream, length: source.length, cursor: select(available, source.cursor +% want, source.cursor) }
+    };
+}

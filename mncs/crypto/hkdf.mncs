@@ -1,0 +1,120 @@
+mncs 0.18;
+
+// mncs.crypto.hkdf — HKDF-SHA-256 as a standardized composition (RFC 5869).
+//
+// Extract and expand are built from mncs.crypto.hmac only: the salt
+// becomes an HMAC key, the input keying material its message (extract),
+// then the pseudorandom key drives a bounded counter-mode expansion.
+//
+// Bounds: salt and input keying material are [byte; up_to 128], context
+// info is [byte; up_to 128], output is at most 128 bytes (four 32-byte
+// blocks). Output length is an explicit parameter, never inferred.
+// An empty salt is well-defined (all-zero block) per RFC 5869 section 2.2.
+module mncs.crypto.hkdf;
+
+use mncs.crypto.buffer as buffer;
+use mncs.crypto.hmac as hmac;
+use mncs.crypto.types as types;
+
+// Extract: PRK = HMAC-SHA-256(salt, IKM). The salt is the HMAC key, so
+// its secrecy (when secret) concentrates into the PRK. Explicit lengths
+// throughout: padded constructions report capacity as runtime length,
+// so whole-view measurement would hash the padding.
+fn extract(salt: [byte; up_to 128], input_keying: [byte; up_to 128]) -> (result: types.Tag) {
+    let salt_length: u64 = select(salt.len <= 128, salt.len, 128);
+    let ikm_length: u64 = select(input_keying.len <= 128, input_keying.len, 128);
+    return hmac.hmac_raw(buffer.copy128(salt, salt_length), salt_length, buffer.copy128(input_keying, ikm_length), ikm_length);
+}
+
+// One expansion block: T(i) = HMAC(PRK, T(i-1) | info | i). The first
+// block chains the empty string; later blocks chain the previous tag.
+fn expand_block(key_bytes: [byte; up_to 256], key_length: u64, previous: [byte; 32], use_previous: bool, info: [byte; up_to 128], info_length: u64, counter: byte) -> (result: [byte; 32]) {
+    // The first block chains nothing: input starts at 0. Later blocks
+    // chain the 32-byte previous tag: input starts at 32.
+    let base: u64 = select(use_previous, 32, 0);
+    let context: [byte; 128] = buffer.copy128(info, info_length);
+    let seed: [byte; 256] = [0; 256];
+    iterate i over seed carrying acc: [byte; 256] = seed {
+        let in_prev: bool = use_previous && i < 32;
+        let past_prev: bool = i >= base;
+        let info_at: u64 = i -% base;
+        let in_info: bool = past_prev && info_at < info_length;
+        let is_counter: bool = past_prev && !(in_prev || in_info) && i == base +% info_length;
+        // Clamped indices: in_info implies info_at < 128, and in_prev
+        // implies i < 32, so the clamped positions are never observed
+        // outside their regions.
+        let pi: u64 = select(i < 32, i, 0);
+        let ci: u64 = select(info_at < 128, info_at, 0);
+        next acc = replace(acc, i, select(in_prev, previous[pi], select(in_info, context[ci], select(is_counter, counter, 0))));
+    }
+    // Block input is base + info_length + 1 bytes; info_length <= 128
+    // keeps the 256-byte absorption bound.
+    return hmac.hmac_raw(key_bytes, key_length, acc, base +% info_length +% 1).bytes;
+}
+
+// Expand: OKM = first `out_length` bytes of T(1) | T(2) | T(3) | T(4).
+// Four blocks cap output at 128 bytes; requests beyond that have no
+// representation here and must be chunked by the caller.
+fn expand(key_bytes: [byte; up_to 256], key_length: u64, info: [byte; up_to 128], out_length: u64) -> (result: [byte; 128]) {
+    let info_length: u64 = select(info.len <= 128, info.len, 128);
+    let clamped: u64 = select(out_length <= 128, out_length, 128);
+    let t1: [byte; 32] = expand_block(key_bytes, key_length, [0; 32], false, info, info_length, 1);
+    let t2: [byte; 32] = expand_block(key_bytes, key_length, t1, true, info, info_length, 2);
+    let t3: [byte; 32] = expand_block(key_bytes, key_length, t2, true, info, info_length, 3);
+    let t4: [byte; 32] = expand_block(key_bytes, key_length, t3, true, info, info_length, 4);
+    let seed: [byte; 128] = [0; 128];
+    iterate i over seed carrying acc: [byte; 128] = seed {
+        let live: bool = i < clamped;
+        let block: u64 = i / 32;
+        let at: u64 = i % 32;
+        let v: byte = select(block == 0, t1[at], select(block == 1, t2[at], select(block == 2, t3[at], t4[at])));
+        next acc = replace(acc, i, select(live, v, 0));
+    }
+    return acc;
+}
+
+// Agreement entries: raw PRK and raw expansion blocks so corpora compare
+// plain bytes across backends. Block indices are 1..4; anything else
+// yields zeros (fail-closed, never a neighboring block).
+fn hkdf_extract_bytes(salt: [byte; up_to 128], input_keying: [byte; up_to 128]) -> (result: [byte; 32]) {
+    return extract(salt, input_keying).bytes;
+}
+
+// First-block-only entry for agreement corpora on step-tight backends:
+// extract plus a single expansion, no wasted blocks. Later-block
+// chaining is proven by the block tests on the reference backend.
+fn hkdf_first_block_bytes(salt: [byte; up_to 128], input_keying: [byte; up_to 128], info: [byte; up_to 128]) -> (result: [byte; 32]) {
+    let prk: types.Tag = extract(salt, input_keying);
+    let info_length: u64 = select(info.len <= 128, info.len, 128);
+    return expand_block(prk_block(prk), 32, [0; 32], false, info, info_length, 1);
+}
+
+fn hkdf_block_bytes(salt: [byte; up_to 128], input_keying: [byte; up_to 128], info: [byte; up_to 128], block_index: u64) -> (result: [byte; 32]) {
+    let prk: types.Tag = extract(salt, input_keying);
+    let info_length: u64 = select(info.len <= 128, info.len, 128);
+    let t1: [byte; 32] = expand_block(prk_block(prk), 32, [0; 32], false, info, info_length, 1);
+    let t2: [byte; 32] = expand_block(prk_block(prk), 32, t1, true, info, info_length, 2);
+    let t3: [byte; 32] = expand_block(prk_block(prk), 32, t2, true, info, info_length, 3);
+    let t4: [byte; 32] = expand_block(prk_block(prk), 32, t3, true, info, info_length, 4);
+    return select(block_index == 1, t1, select(block_index == 2, t2, select(block_index == 3, t3, select(block_index == 4, t4, [0; 32]))));
+}
+
+// HKDF-SHA-256: extract then expand. Returns the key material with its
+// live length; bytes past the length are zero, never key-adjacent.
+record OkM { bytes: [byte; 128], length: u64 }
+
+fn hkdf_sha256(salt: [byte; up_to 128], input_keying: [byte; up_to 128], info: [byte; up_to 128], out_length: u64) -> (result: OkM) {
+    let prk: types.Tag = extract(salt, input_keying);
+    let clamped: u64 = select(out_length <= 128, out_length, 128);
+    return OkM { bytes: expand(prk_block(prk), 32, info, clamped), length: clamped };
+}
+
+// The 32-byte PRK widened to a key view.
+fn prk_block(prk: types.Tag) -> (result: [byte; up_to 256]) {
+    let seed: [byte; 256] = [0; 256];
+    iterate i over seed carrying acc: [byte; 256] = seed {
+        let pi: u64 = select(i < 32, i, 0);
+        next acc = replace(acc, i, select(i < 32, prk.bytes[pi], 0));
+    }
+    return acc;
+}

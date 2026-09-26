@@ -1,0 +1,53 @@
+mncs 0.18;
+
+// mncs.crypto.buffer — empty-safe view-to-fixed copies.
+//
+// Language boundary (CRYPTO-PRESS-EMPTY-VIEW): indexing a view whose
+// runtime length is zero traps at runtime, even when the index is
+// guarded by select or a boolean. select does not suppress evaluation
+// of the indexing operation. Every function below therefore branches
+// on length zero before any indexing happens, and every crypto
+// construction indexes the returned fixed buffer — never a caller view
+// — afterwards. Callers must route all view indexing through these
+// copies; direct view indexing with a possibly-empty view is a
+// runtime-failure bug.
+module mncs.crypto.buffer;
+
+fn copy256(view: [byte; up_to 256], length: u64) -> (result: [byte; 256]) {
+    let seed: [byte; 256] = [0; 256];
+    if view.len == 0 {
+        return seed;
+    }
+    iterate i over seed carrying acc: [byte; 256] = seed {
+        let live: bool = i < length && i < view.len;
+        let di: u64 = select(live, i, 0);
+        next acc = replace(acc, i, select(live, view[di], 0));
+    }
+    return acc;
+}
+
+fn copy128(view: [byte; up_to 128], length: u64) -> (result: [byte; 128]) {
+    let seed: [byte; 128] = [0; 128];
+    if view.len == 0 {
+        return seed;
+    }
+    iterate i over seed carrying acc: [byte; 128] = seed {
+        let live: bool = i < length && i < view.len;
+        let di: u64 = select(live, i, 0);
+        next acc = replace(acc, i, select(live, view[di], 0));
+    }
+    return acc;
+}
+
+fn copy64(view: [byte; up_to 64], length: u64) -> (result: [byte; 64]) {
+    let seed: [byte; 64] = [0; 64];
+    if view.len == 0 {
+        return seed;
+    }
+    iterate i over seed carrying acc: [byte; 64] = seed {
+        let live: bool = i < length && i < view.len;
+        let di: u64 = select(live, i, 0);
+        next acc = replace(acc, i, select(live, view[di], 0));
+    }
+    return acc;
+}

@@ -1,0 +1,148 @@
+mncs 0.18;
+
+// mncs.crypto.hmac — HMAC-SHA-256 as a standardized composition (RFC 2104).
+//
+// No primitive is invented here: the compression function is
+// mncs.std.sha256 and the typed absorption is mncs.crypto.hash. This
+// module owns the HMAC construction over them: key blocking, ipad/opad
+// separation, and tag verification with an explicit validity verdict.
+//
+// Key handling: keys longer than the 64-byte block are pre-hashed (never
+// truncated); shorter keys are zero-padded. The empty key is well-defined
+// (all-zero block) and accepted.
+//
+// Verification bound: the equality check below is ordinary native
+// comparison. The toolchain currently provides no constant-time compare
+// primitive and MNCS cannot guarantee timing behavior, so this module
+// claims none. See CRYPTO-PRESS-CT in docs/LANGUAGE_PRESSURES.md.
+module mncs.crypto.hmac;
+
+use mncs.core.bytes.v1 as bytes;
+use mncs.crypto.buffer as buffer;
+use mncs.crypto.hash as hash;
+use mncs.crypto.types as types;
+
+// The 64-byte key block: the key itself when short, its digest when
+// long, zeros when empty. Exactly one of the three cases applies.
+fn key_block(raw: [byte; up_to 256], length: u64) -> (result: [byte; 64]) {
+    let buf: [byte; 256] = buffer.copy256(raw, length);
+    let seed: [byte; 64] = [0; 64];
+    if length <= 64 {
+        iterate i over seed carrying blk: [byte; 64] = seed {
+            next blk = replace(blk, i, select(i < length, buf[i], 0));
+        }
+        return blk;
+    }
+    let hashed: [byte; 32] = hash.sha256(buf, length).bytes;
+    iterate i over seed carrying blk: [byte; 64] = seed {
+        // The clamp keeps the index in bounds on every iteration; the
+        // outer select discards the value past 32, so index 0 there is
+        // never observed.
+        let hi: u64 = select(i < 32, i, 0);
+        next blk = replace(blk, i, select(i < 32, hashed[hi], 0));
+    }
+    return blk;
+}
+
+// Pad a key block with a fixed xor byte: 0x36 inner, 0x5c outer.
+fn padded(block: [byte; 64], pad: byte) -> (result: [byte; 64]) {
+    let seed: [byte; 64] = [0; 64];
+    iterate i over seed carrying acc: [byte; 64] = seed {
+        next acc = replace(acc, i, bytes.xor(block[i], pad));
+    }
+    return acc;
+}
+
+// Inner input: 64 pad bytes followed by the message (at most 192, so
+// the 256-byte absorption bound always holds).
+fn inner_input(pad: [byte; 64], message: [byte; up_to 256], message_length: u64) -> (result: [byte; 256]) {
+    let buf: [byte; 256] = buffer.copy256(message, message_length);
+    let seed: [byte; 256] = [0; 256];
+    iterate i over seed carrying acc: [byte; 256] = seed {
+        let in_pad: bool = i < 64;
+        let mi: u64 = i -% 64;
+        let live: bool = !in_pad && mi < message_length;
+        // Both indices are clamped into their arrays on every
+        // iteration; the selects discard out-of-region values.
+        let pi: u64 = select(i < 64, i, 0);
+        let di: u64 = select(mi < 256, mi, 0);
+        next acc = replace(acc, i, select(in_pad, pad[pi], select(live, buf[di], 0)));
+    }
+    return acc;
+}
+
+// Outer input: 64 pad bytes followed by the 32-byte inner digest.
+fn outer_input(pad: [byte; 64], inner: [byte; 32]) -> (result: [byte; 256]) {
+    let seed: [byte; 256] = [0; 256];
+    iterate i over seed carrying acc: [byte; 256] = seed {
+        let in_pad: bool = i < 64;
+        let ii: u64 = i -% 64;
+        // Clamped indices: pad positions past 63 and inner positions
+        // past 31 read index 0, discarded by the selects.
+        let pi: u64 = select(i < 64, i, 0);
+        let di: u64 = select(ii < 32, ii, 0);
+        next acc = replace(acc, i, select(in_pad, pad[pi], select(ii < 32, inner[di], 0)));
+    }
+    return acc;
+}
+
+// HMAC-SHA-256 over explicit buffers. Internal engines pass fixed
+// constructions with live lengths; the public whole-view entry clamps
+// runtime lengths into the documented bounds.
+fn hmac_raw(key_bytes: [byte; up_to 256], key_length: u64, message: [byte; up_to 256], message_length: u64) -> (result: types.Tag) {
+    let block: [byte; 64] = key_block(key_bytes, key_length);
+    let inner: [byte; 32] = hash.sha256(inner_input(padded(block, 54), message, message_length), 64 +% message_length).bytes;
+    let outer: [byte; 32] = hash.sha256(outer_input(padded(block, 92), inner), 96).bytes;
+    return types.tag(outer);
+}
+
+// HMAC-SHA-256. Pure and total over bounded inputs.
+fn hmac_sha256(key: types.HmacKey, message: [byte; up_to 192]) -> (result: types.Tag) {
+    let key_length: u64 = select(key.bytes.len <= 256, key.bytes.len, 256);
+    let message_length: u64 = select(message.len <= 192, message.len, 192);
+    return hmac_raw(key.bytes, key_length, message, message_length);
+}
+
+// Truncated 128-bit tag for short-tag protocols. The truncation point
+// is fixed by the ShortTag type, never a caller parameter.
+fn hmac_sha256_128(key: types.HmacKey, message: [byte; up_to 192]) -> (result: types.ShortTag) {
+    let full: [byte; 32] = hmac_sha256(key, message).bytes;
+    let seed: [byte; 16] = [0; 16];
+    iterate i over seed carrying acc: [byte; 16] = seed {
+        next acc = replace(acc, i, full[i]);
+    }
+    return types.short_tag(acc);
+}
+
+// Element-wise tag comparison. This is ordinary native comparison, not
+// a constant-time primitive: see the module header.
+fn tags_equal(a: [byte; 32], b: [byte; 32]) -> (result: bool) {
+    iterate i over a carrying same: bool = true {
+        next same = same && a[i] == b[i];
+    }
+    return same;
+}
+
+fn short_tags_equal(a: [byte; 16], b: [byte; 16]) -> (result: bool) {
+    iterate i over a carrying same: bool = true {
+        next same = same && a[i] == b[i];
+    }
+    return same;
+}
+
+// Verification returns a validity verdict, never a failure: a wrong key
+// or tampered message is an expected semantic outcome, not an error.
+// Malformed inputs cannot reach here: sizes are static in the types.
+fn hmac_verify(key: types.HmacKey, message: [byte; up_to 192], expected: types.Tag) -> (result: bool) {
+    return tags_equal(hmac_sha256(key, message).bytes, expected.bytes);
+}
+
+fn hmac_verify_128(key: types.HmacKey, message: [byte; up_to 192], expected: types.ShortTag) -> (result: bool) {
+    return short_tags_equal(hmac_sha256_128(key, message).bytes, expected.bytes);
+}
+
+// Raw-bytes entry for agreement corpora. Corpus views are genuine
+// caller-sized views, so whole-view measurement is exact here.
+fn hmac_sha256_bytes(key: [byte; up_to 256], message: [byte; up_to 192]) -> (result: [byte; 32]) {
+    return hmac_sha256(types.hmac_key(key), message).bytes;
+}

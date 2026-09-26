@@ -1,0 +1,65 @@
+mncs 0.18;
+
+// mncs.crypto.sig — Ed25519 verification through the executor's vetted
+// backend (ed25519-dalek), behind an explicit capability grant.
+//
+// This module signs nothing: the verify-only grant exists precisely so
+// no secret crosses the host boundary, and there is no signing key type
+// here at all. Verification takes public data only (key, message,
+// signature) and returns a validity verdict: true for genuine
+// signatures, false for well-formed forgeries. Malformed shapes (wrong
+// key/signature sizes) are refused by the realization layer before any
+// cryptography runs, and calls without a `--grant-crypto` capability
+// fail closed.
+//
+// Messages cross in one 64-byte view operand: longer messages have no
+// representation and must be hashed-then-signed by an explicit protocol
+// above this module, never silently inside it.
+module mncs.crypto.sig;
+
+use mncs.crypto.types as types;
+
+// Verify an Ed25519 signature against its public key and message.
+// Effectful: requires the operator's explicit crypto capability.
+fn verify(public_key: types.PublicKey, message: [byte; up_to 64], signature: types.Signature) -> (result: bool)
+    capability crypto_verify
+    effect ed25519_verify authorized_by crypto_verify
+{
+    return ed25519_verify(public_key.bytes, message, signature.bytes);
+}
+
+// Corpus entry: raw shapes in, status code out. 0 means the signature is
+// valid, 1 means well-formed but forged, 2 means malformed. Returning a
+// code (rather than failing) keeps tamper cases observable in agreement
+// corpora; the malformed path still exercises the layer's refusal shape
+// through the returned code, not through backend values.
+fn verify_status(key: [byte; up_to 64], message: [byte; up_to 64], sig: [byte; up_to 128]) -> (result: u64)
+    capability crypto_verify
+    effect ed25519_verify authorized_by crypto_verify
+{
+    // Shape gate first: sizes are static in the typed API, so this
+    // branch exists only for the raw corpus entry.
+    if key.len != 32 || sig.len != 64 {
+        return 2;
+    }
+    let fixed_key: [byte; 32] = take32(key);
+    let fixed_sig: [byte; 64] = take64(sig);
+    let ok: bool = verify(types.public_key(fixed_key), message, types.signature(fixed_sig));
+    return select(ok, 0, 1);
+}
+
+fn take32(view: [byte; up_to 64]) -> (result: [byte; 32]) {
+    let seed: [byte; 32] = [0; 32];
+    iterate i over seed carrying acc: [byte; 32] = seed {
+        next acc = replace(acc, i, view[i]);
+    }
+    return acc;
+}
+
+fn take64(view: [byte; up_to 128]) -> (result: [byte; 64]) {
+    let seed: [byte; 64] = [0; 64];
+    iterate i over seed carrying acc: [byte; 64] = seed {
+        next acc = replace(acc, i, view[i]);
+    }
+    return acc;
+}

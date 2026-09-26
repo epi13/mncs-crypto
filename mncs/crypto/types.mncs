@@ -1,0 +1,165 @@
+mncs 0.18;
+
+// mncs.crypto.types — typed algorithm identities and semantic crypto values.
+//
+// Every cryptographic value carries its algorithm identity next to its
+// bytes, so a SHA-256 digest can never be passed where an HMAC tag is
+// expected and a display helper for public values can never be applied
+// to secret key material (no such helper exists for secret types).
+//
+// Fixed-size values (digests, public keys, signatures) use fixed arrays:
+// a wrong-sized key or signature is a static shape error, never a runtime
+// surprise. Variable-length secret inputs (HMAC keys) are bounded views
+// with an explicit constructor that enforces the bound.
+//
+// Secrecy rule: types whose names contain Key material have no hex,
+// display, or logging projection anywhere in this repository. Public
+// values (digests, tags, public keys, signatures) do.
+module mncs.crypto.types;
+
+// --- Algorithm descriptors: typed identities, never bare strings. ---
+
+enum HashAlg { Sha256 }
+
+enum MacAlg { HmacSha256 }
+
+enum KdfAlg { HkdfSha256 }
+
+enum SigAlg { Ed25519 }
+
+// --- Semantic values. ---
+
+// SHA-256 digest: always 32 bytes, always labelled.
+record Digest { algorithm: HashAlg, bytes: [byte; 32] }
+
+// HMAC-SHA-256 key: secret. Bounded to 256 bytes; longer keys are
+// pre-hashed by the HMAC operation, never silently truncated.
+record HmacKey { algorithm: MacAlg, bytes: [byte; up_to 256] }
+
+// HMAC-SHA-256 tag: public authenticator, safe to display and compare.
+record Tag { algorithm: MacAlg, bytes: [byte; 32] }
+
+// Truncated 128-bit tag for protocols that negotiate short tags
+// (RFC 4231 test case 5 shape). Truncation is explicit in the type.
+record ShortTag { algorithm: MacAlg, bytes: [byte; 16] }
+
+// Ed25519 public key: fixed 32 bytes by construction.
+record PublicKey { algorithm: SigAlg, bytes: [byte; 32] }
+
+// Ed25519 signature: fixed 64 bytes by construction.
+record Signature { algorithm: SigAlg, bytes: [byte; 64] }
+
+// --- Constructors: the only way to build keyed values from raw bytes. ---
+
+fn digest(bytes: [byte; 32]) -> (result: Digest) {
+    return Digest { algorithm: HashAlg.Sha256, bytes: bytes };
+}
+
+fn hmac_key(bytes: [byte; up_to 256]) -> (result: HmacKey) {
+    return HmacKey { algorithm: MacAlg.HmacSha256, bytes: bytes };
+}
+
+fn tag(bytes: [byte; 32]) -> (result: Tag) {
+    return Tag { algorithm: MacAlg.HmacSha256, bytes: bytes };
+}
+
+fn short_tag(bytes: [byte; 16]) -> (result: ShortTag) {
+    return ShortTag { algorithm: MacAlg.HmacSha256, bytes: bytes };
+}
+
+fn public_key(bytes: [byte; 32]) -> (result: PublicKey) {
+    return PublicKey { algorithm: SigAlg.Ed25519, bytes: bytes };
+}
+
+fn signature(bytes: [byte; 64]) -> (result: Signature) {
+    return Signature { algorithm: SigAlg.Ed25519, bytes: bytes };
+}
+
+// --- Structured failures: codes only, never secret bytes. ---
+
+enum CryptoError {
+    Ok,
+    MessageTooLong,
+    KeyTooLong,
+    SaltTooLong,
+    InfoTooLong,
+    OutputTooLong,
+    EntropyExhausted,
+    DrawTooLarge,
+    MalformedHex,
+    OddHexLength,
+    HexTooLong,
+    UnsupportedCapability,
+}
+
+fn hash_alg_code(algorithm: HashAlg) -> (result: u64) {
+    return match algorithm {
+        Sha256 => 1,
+    };
+}
+
+fn mac_alg_code(algorithm: MacAlg) -> (result: u64) {
+    return match algorithm {
+        HmacSha256 => 1,
+    };
+}
+
+fn kdf_alg_code(algorithm: KdfAlg) -> (result: u64) {
+    return match algorithm {
+        HkdfSha256 => 1,
+    };
+}
+
+fn sig_alg_code(algorithm: SigAlg) -> (result: u64) {
+    return match algorithm {
+        Ed25519 => 1,
+    };
+}
+
+fn error_code(error: CryptoError) -> (result: u64) {
+    return match error {
+        Ok => 0,
+        MessageTooLong => 1,
+        KeyTooLong => 2,
+        SaltTooLong => 3,
+        InfoTooLong => 4,
+        OutputTooLong => 5,
+        EntropyExhausted => 6,
+        DrawTooLarge => 7,
+        MalformedHex => 8,
+        OddHexLength => 9,
+        HexTooLong => 10,
+        UnsupportedCapability => 11,
+    };
+}
+
+// --- Bounds: the single source of truth for input limits. ---
+
+fn max_message_bytes() -> (result: u64) {
+    // 192 keeps the 64-byte ipad plus the message inside the 256-byte
+    // absorption bound, leaving room for HKDF expansion blocks.
+    return 192;
+}
+
+fn max_key_bytes() -> (result: u64) {
+    return 256;
+}
+
+fn max_salt_bytes() -> (result: u64) {
+    return 128;
+}
+
+fn max_info_bytes() -> (result: u64) {
+    return 128;
+}
+
+fn max_output_bytes() -> (result: u64) {
+    return 128;
+}
+
+fn max_verify_message_bytes() -> (result: u64) {
+    // Ed25519 verification crosses the host boundary through one
+    // 64-byte view operand; longer messages are rejected, never
+    // silently hashed-then-signed behind the caller's back.
+    return 64;
+}

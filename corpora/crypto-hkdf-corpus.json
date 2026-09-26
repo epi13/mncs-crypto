@@ -1,0 +1,1411 @@
+{
+ "schema_version": "0.1",
+ "name": "crypto-hkdf",
+ "cases": [
+  {
+   "id": "hkdf-a1-extract",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.crypto.hkdf",
+     "function": "hkdf_extract_bytes"
+    },
+    "arguments": [
+     {
+      "sequence": {
+       "values": [
+        {
+         "byte": {
+          "value": 0
+         }
+        },
+        {
+         "byte": {
+          "value": 1
+         }
+        },
+        {
+         "byte": {
+          "value": 2
+         }
+        },
+        {
+         "byte": {
+          "value": 3
+         }
+        },
+        {
+         "byte": {
+          "value": 4
+         }
+        },
+        {
+         "byte": {
+          "value": 5
+         }
+        },
+        {
+         "byte": {
+          "value": 6
+         }
+        },
+        {
+         "byte": {
+          "value": 7
+         }
+        },
+        {
+         "byte": {
+          "value": 8
+         }
+        },
+        {
+         "byte": {
+          "value": 9
+         }
+        },
+        {
+         "byte": {
+          "value": 10
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 12
+         }
+        }
+       ]
+      }
+     },
+     {
+      "sequence": {
+       "values": [
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "step_budget": 2000000
+   },
+   "expected": [
+    {
+     "sequence": {
+      "values": [
+       {
+        "byte": {
+         "value": 7
+        }
+       },
+       {
+        "byte": {
+         "value": 119
+        }
+       },
+       {
+        "byte": {
+         "value": 9
+        }
+       },
+       {
+        "byte": {
+         "value": 54
+        }
+       },
+       {
+        "byte": {
+         "value": 44
+        }
+       },
+       {
+        "byte": {
+         "value": 46
+        }
+       },
+       {
+        "byte": {
+         "value": 50
+        }
+       },
+       {
+        "byte": {
+         "value": 223
+        }
+       },
+       {
+        "byte": {
+         "value": 13
+        }
+       },
+       {
+        "byte": {
+         "value": 220
+        }
+       },
+       {
+        "byte": {
+         "value": 63
+        }
+       },
+       {
+        "byte": {
+         "value": 13
+        }
+       },
+       {
+        "byte": {
+         "value": 196
+        }
+       },
+       {
+        "byte": {
+         "value": 123
+        }
+       },
+       {
+        "byte": {
+         "value": 186
+        }
+       },
+       {
+        "byte": {
+         "value": 99
+        }
+       },
+       {
+        "byte": {
+         "value": 144
+        }
+       },
+       {
+        "byte": {
+         "value": 182
+        }
+       },
+       {
+        "byte": {
+         "value": 199
+        }
+       },
+       {
+        "byte": {
+         "value": 59
+        }
+       },
+       {
+        "byte": {
+         "value": 181
+        }
+       },
+       {
+        "byte": {
+         "value": 15
+        }
+       },
+       {
+        "byte": {
+         "value": 156
+        }
+       },
+       {
+        "byte": {
+         "value": 49
+        }
+       },
+       {
+        "byte": {
+         "value": 34
+        }
+       },
+       {
+        "byte": {
+         "value": 236
+        }
+       },
+       {
+        "byte": {
+         "value": 132
+        }
+       },
+       {
+        "byte": {
+         "value": 74
+        }
+       },
+       {
+        "byte": {
+         "value": 215
+        }
+       },
+       {
+        "byte": {
+         "value": 194
+        }
+       },
+       {
+        "byte": {
+         "value": 179
+        }
+       },
+       {
+        "byte": {
+         "value": 229
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "hkdf-a1-block1",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.crypto.hkdf",
+     "function": "hkdf_first_block_bytes"
+    },
+    "arguments": [
+     {
+      "sequence": {
+       "values": [
+        {
+         "byte": {
+          "value": 0
+         }
+        },
+        {
+         "byte": {
+          "value": 1
+         }
+        },
+        {
+         "byte": {
+          "value": 2
+         }
+        },
+        {
+         "byte": {
+          "value": 3
+         }
+        },
+        {
+         "byte": {
+          "value": 4
+         }
+        },
+        {
+         "byte": {
+          "value": 5
+         }
+        },
+        {
+         "byte": {
+          "value": 6
+         }
+        },
+        {
+         "byte": {
+          "value": 7
+         }
+        },
+        {
+         "byte": {
+          "value": 8
+         }
+        },
+        {
+         "byte": {
+          "value": 9
+         }
+        },
+        {
+         "byte": {
+          "value": 10
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 12
+         }
+        }
+       ]
+      }
+     },
+     {
+      "sequence": {
+       "values": [
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        }
+       ]
+      }
+     },
+     {
+      "sequence": {
+       "values": [
+        {
+         "byte": {
+          "value": 240
+         }
+        },
+        {
+         "byte": {
+          "value": 241
+         }
+        },
+        {
+         "byte": {
+          "value": 242
+         }
+        },
+        {
+         "byte": {
+          "value": 243
+         }
+        },
+        {
+         "byte": {
+          "value": 244
+         }
+        },
+        {
+         "byte": {
+          "value": 245
+         }
+        },
+        {
+         "byte": {
+          "value": 246
+         }
+        },
+        {
+         "byte": {
+          "value": 247
+         }
+        },
+        {
+         "byte": {
+          "value": 248
+         }
+        },
+        {
+         "byte": {
+          "value": 249
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "step_budget": 2000000
+   },
+   "expected": [
+    {
+     "sequence": {
+      "values": [
+       {
+        "byte": {
+         "value": 60
+        }
+       },
+       {
+        "byte": {
+         "value": 178
+        }
+       },
+       {
+        "byte": {
+         "value": 95
+        }
+       },
+       {
+        "byte": {
+         "value": 37
+        }
+       },
+       {
+        "byte": {
+         "value": 250
+        }
+       },
+       {
+        "byte": {
+         "value": 172
+        }
+       },
+       {
+        "byte": {
+         "value": 213
+        }
+       },
+       {
+        "byte": {
+         "value": 122
+        }
+       },
+       {
+        "byte": {
+         "value": 144
+        }
+       },
+       {
+        "byte": {
+         "value": 67
+        }
+       },
+       {
+        "byte": {
+         "value": 79
+        }
+       },
+       {
+        "byte": {
+         "value": 100
+        }
+       },
+       {
+        "byte": {
+         "value": 208
+        }
+       },
+       {
+        "byte": {
+         "value": 54
+        }
+       },
+       {
+        "byte": {
+         "value": 47
+        }
+       },
+       {
+        "byte": {
+         "value": 42
+        }
+       },
+       {
+        "byte": {
+         "value": 45
+        }
+       },
+       {
+        "byte": {
+         "value": 45
+        }
+       },
+       {
+        "byte": {
+         "value": 10
+        }
+       },
+       {
+        "byte": {
+         "value": 144
+        }
+       },
+       {
+        "byte": {
+         "value": 207
+        }
+       },
+       {
+        "byte": {
+         "value": 26
+        }
+       },
+       {
+        "byte": {
+         "value": 90
+        }
+       },
+       {
+        "byte": {
+         "value": 76
+        }
+       },
+       {
+        "byte": {
+         "value": 93
+        }
+       },
+       {
+        "byte": {
+         "value": 176
+        }
+       },
+       {
+        "byte": {
+         "value": 45
+        }
+       },
+       {
+        "byte": {
+         "value": 86
+        }
+       },
+       {
+        "byte": {
+         "value": 236
+        }
+       },
+       {
+        "byte": {
+         "value": 196
+        }
+       },
+       {
+        "byte": {
+         "value": 197
+        }
+       },
+       {
+        "byte": {
+         "value": 191
+        }
+       }
+      ]
+     }
+    }
+   ],
+   "backends": [
+    "mncs-portable-wasm-mvp",
+    "mncs-research-bytecode"
+   ]
+  },
+  {
+   "id": "hkdf-a3-extract",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.crypto.hkdf",
+     "function": "hkdf_extract_bytes"
+    },
+    "arguments": [
+     {
+      "sequence": {
+       "values": []
+      }
+     },
+     {
+      "sequence": {
+       "values": [
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "step_budget": 2000000
+   },
+   "expected": [
+    {
+     "sequence": {
+      "values": [
+       {
+        "byte": {
+         "value": 25
+        }
+       },
+       {
+        "byte": {
+         "value": 239
+        }
+       },
+       {
+        "byte": {
+         "value": 36
+        }
+       },
+       {
+        "byte": {
+         "value": 163
+        }
+       },
+       {
+        "byte": {
+         "value": 44
+        }
+       },
+       {
+        "byte": {
+         "value": 113
+        }
+       },
+       {
+        "byte": {
+         "value": 123
+        }
+       },
+       {
+        "byte": {
+         "value": 22
+        }
+       },
+       {
+        "byte": {
+         "value": 127
+        }
+       },
+       {
+        "byte": {
+         "value": 51
+        }
+       },
+       {
+        "byte": {
+         "value": 169
+        }
+       },
+       {
+        "byte": {
+         "value": 29
+        }
+       },
+       {
+        "byte": {
+         "value": 111
+        }
+       },
+       {
+        "byte": {
+         "value": 100
+        }
+       },
+       {
+        "byte": {
+         "value": 139
+        }
+       },
+       {
+        "byte": {
+         "value": 223
+        }
+       },
+       {
+        "byte": {
+         "value": 150
+        }
+       },
+       {
+        "byte": {
+         "value": 89
+        }
+       },
+       {
+        "byte": {
+         "value": 103
+        }
+       },
+       {
+        "byte": {
+         "value": 118
+        }
+       },
+       {
+        "byte": {
+         "value": 175
+        }
+       },
+       {
+        "byte": {
+         "value": 219
+        }
+       },
+       {
+        "byte": {
+         "value": 99
+        }
+       },
+       {
+        "byte": {
+         "value": 119
+        }
+       },
+       {
+        "byte": {
+         "value": 172
+        }
+       },
+       {
+        "byte": {
+         "value": 67
+        }
+       },
+       {
+        "byte": {
+         "value": 76
+        }
+       },
+       {
+        "byte": {
+         "value": 28
+        }
+       },
+       {
+        "byte": {
+         "value": 41
+        }
+       },
+       {
+        "byte": {
+         "value": 60
+        }
+       },
+       {
+        "byte": {
+         "value": 203
+        }
+       },
+       {
+        "byte": {
+         "value": 4
+        }
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "hkdf-a3-block1",
+   "request": {
+    "schema_version": "0.1",
+    "target": {
+     "module": "mncs.crypto.hkdf",
+     "function": "hkdf_first_block_bytes"
+    },
+    "arguments": [
+     {
+      "sequence": {
+       "values": []
+      }
+     },
+     {
+      "sequence": {
+       "values": [
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        },
+        {
+         "byte": {
+          "value": 11
+         }
+        }
+       ]
+      }
+     },
+     {
+      "sequence": {
+       "values": []
+      }
+     }
+    ],
+    "step_budget": 2000000
+   },
+   "expected": [
+    {
+     "sequence": {
+      "values": [
+       {
+        "byte": {
+         "value": 141
+        }
+       },
+       {
+        "byte": {
+         "value": 164
+        }
+       },
+       {
+        "byte": {
+         "value": 231
+        }
+       },
+       {
+        "byte": {
+         "value": 117
+        }
+       },
+       {
+        "byte": {
+         "value": 165
+        }
+       },
+       {
+        "byte": {
+         "value": 99
+        }
+       },
+       {
+        "byte": {
+         "value": 193
+        }
+       },
+       {
+        "byte": {
+         "value": 143
+        }
+       },
+       {
+        "byte": {
+         "value": 113
+        }
+       },
+       {
+        "byte": {
+         "value": 95
+        }
+       },
+       {
+        "byte": {
+         "value": 128
+        }
+       },
+       {
+        "byte": {
+         "value": 42
+        }
+       },
+       {
+        "byte": {
+         "value": 6
+        }
+       },
+       {
+        "byte": {
+         "value": 60
+        }
+       },
+       {
+        "byte": {
+         "value": 90
+        }
+       },
+       {
+        "byte": {
+         "value": 49
+        }
+       },
+       {
+        "byte": {
+         "value": 184
+        }
+       },
+       {
+        "byte": {
+         "value": 161
+        }
+       },
+       {
+        "byte": {
+         "value": 31
+        }
+       },
+       {
+        "byte": {
+         "value": 92
+        }
+       },
+       {
+        "byte": {
+         "value": 94
+        }
+       },
+       {
+        "byte": {
+         "value": 225
+        }
+       },
+       {
+        "byte": {
+         "value": 135
+        }
+       },
+       {
+        "byte": {
+         "value": 158
+        }
+       },
+       {
+        "byte": {
+         "value": 195
+        }
+       },
+       {
+        "byte": {
+         "value": 69
+        }
+       },
+       {
+        "byte": {
+         "value": 78
+        }
+       },
+       {
+        "byte": {
+         "value": 95
+        }
+       },
+       {
+        "byte": {
+         "value": 60
+        }
+       },
+       {
+        "byte": {
+         "value": 115
+        }
+       },
+       {
+        "byte": {
+         "value": 141
+        }
+       },
+       {
+        "byte": {
+         "value": 45
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

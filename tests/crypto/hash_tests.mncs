@@ -1,0 +1,92 @@
+mncs 0.18;
+
+// Proofs of mncs.crypto.hash: FIPS 180-4 known answers, block-boundary
+// absorption, determinism. Every expected digest below is pinned from
+// the standard and confirmed by two independent oracles (OpenSSL-backed
+// hashlib and coreutils sha256sum) before being frozen here.
+module tests.crypto.hash_tests;
+
+// Long literals below were machine-emitted by scripts/mncs_bytes.py
+// from pinned hex, never hand-typed.
+use mncs.crypto.hash;
+use mncs.crypto.types;
+use mncs.test.assertions;
+use mncs.test.suite;
+
+test sha256_empty() -> (result: TestResult) {
+    let msg: [byte; up_to 256] = [];
+    let got: [byte; 32] = sha256_bytes(msg, 0);
+    let want: [byte; 32] = [
+    227, 176, 196, 66, 152, 252, 28, 20, 154, 251, 244, 200, 153, 111, 185, 36,
+    39, 174, 65, 228, 100, 155, 147, 76, 164, 149, 153, 27, 120, 82, 184, 85
+];
+    return from_assertion(equals_bytes(want, got, 8201));
+}
+
+test sha256_abc() -> (result: TestResult) {
+    let msg: [byte; up_to 256] = [97, 98, 99];
+    let got: [byte; 32] = sha256_bytes(msg, 3);
+    let want: [byte; 32] = [
+    186, 120, 22, 191, 143, 1, 207, 234, 65, 65, 64, 222, 93, 174, 34, 35,
+    176, 3, 97, 163, 150, 23, 122, 156, 180, 16, 255, 97, 242, 0, 21, 173
+];
+    return from_assertion(equals_bytes(want, got, 8202));
+}
+
+test sha256_fips56() -> (result: TestResult) {
+    // 56 bytes: the padding boundary (fits one block with length).
+    let msg: [byte; up_to 256] = [97, 98, 99, 100, 98, 99, 100, 101, 99, 100, 101, 102, 100, 101, 102, 103, 101, 102, 103, 104, 102, 103, 104, 105, 103, 104, 105, 106, 104, 105, 106, 107, 105, 106, 107, 108, 106, 107, 108, 109, 107, 108, 109, 110, 108, 109, 110, 111, 109, 110, 111, 112, 110, 111, 112, 113];
+    let got: [byte; 32] = sha256_bytes(msg, 56);
+    let want: [byte; 32] = [
+    36, 141, 106, 97, 210, 6, 56, 184, 229, 192, 38, 147, 12, 62, 96, 57,
+    163, 60, 228, 89, 100, 255, 33, 103, 246, 236, 237, 212, 25, 219, 6, 193
+];
+    return from_assertion(equals_bytes(want, got, 8203));
+}
+
+test sha256_exact_block() -> (result: TestResult) {
+    // 64 bytes: exactly one message block plus the padding block.
+    let msg: [byte; up_to 256] = [97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97];
+    let got: [byte; 32] = sha256_bytes(msg, 64);
+    let want: [byte; 32] = [
+    255, 224, 84, 254, 122, 224, 203, 109, 198, 92, 58, 249, 182, 29, 82, 9,
+    244, 57, 133, 29, 180, 61, 11, 165, 153, 115, 55, 223, 21, 70, 104, 235
+];
+    return from_assertion(equals_bytes(want, got, 8204));
+}
+
+test sha256_two_blocks() -> (result: TestResult) {
+    // 119 bytes: two message blocks plus the padding block.
+    let msg: [byte; up_to 256] = [97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97];
+    let got: [byte; 32] = sha256_bytes(msg, 119);
+    let want: [byte; 32] = [
+    49, 235, 165, 28, 49, 58, 92, 8, 34, 106, 223, 24, 212, 163, 89, 207,
+    223, 216, 210, 232, 22, 177, 63, 74, 249, 82, 247, 234, 101, 132, 220, 251
+];
+    return from_assertion(equals_bytes(want, got, 8205));
+}
+
+test sha256_four_windows() -> (result: TestResult) {
+    // 200 bytes: spans all four absorption windows.
+    let msg: [byte; up_to 256] = [97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97];
+    let got: [byte; 32] = sha256_bytes(msg, 200);
+    let want: [byte; 32] = [
+    194, 169, 8, 217, 143, 93, 249, 135, 173, 228, 27, 95, 206, 33, 48, 103,
+    239, 188, 194, 30, 242, 36, 2, 18, 164, 30, 84, 181, 231, 194, 138, 229
+];
+    return from_assertion(equals_bytes(want, got, 8206));
+}
+
+test sha256_is_deterministic() -> (result: TestResult) {
+    let msg: [byte; up_to 256] = [97, 98, 99];
+    let a: [byte; 32] = sha256_bytes(msg, 3);
+    let b: [byte; 32] = sha256_bytes(msg, 3);
+    return from_assertion(equals_bytes(a, b, 8207));
+}
+
+test sha256_view_convenience_agrees() -> (result: TestResult) {
+    let msg: [byte; up_to 256] = [97, 98, 99];
+    let a: [byte; 32] = sha256_view(msg).bytes;
+    let b: [byte; 32] = sha256_bytes(msg, 3);
+    return from_assertion(equals_bytes(a, b, 8208));
+}

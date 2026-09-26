@@ -1,0 +1,76 @@
+mncs 0.18;
+
+// mncs.crypto.hash — typed SHA-256 over the canonical native compression.
+//
+// The compression function, schedule, padding, and streaming state are
+// owned by mncs.std.sha256 (pure bounded MNCS, verified against its own
+// vectors). This module owns what std leaves open: the round-constant
+// table, chunked absorption for bounded inputs, and the typed Digest
+// contract. Callers never supply round constants and never see raw
+// compression state.
+//
+// Bounds: messages are [byte; up_to 256] absorbed as four 64-byte
+// windows. Longer inputs are rejected structurally by the view bound,
+// not truncated.
+module mncs.crypto.hash;
+
+use mncs.crypto.buffer as buffer;
+use mncs.crypto.types as types;
+use mncs.std.sha256 as stdhash;
+
+// The 64 FIPS 180-4 round constants, defined once. Every digest in this
+// repository flows through this table.
+fn round_constants() -> (result: [u32; 64]) {
+    return [1116352408, 1899447441, 3049323471, 3921009573, 961987163, 1508970993, 2453635748, 2870763221, 3624381080, 310598401, 607225278, 1426881987, 1925078388, 2162078206, 2614888103, 3248222580, 3835390401, 4022224774, 264347078, 604807628, 770255983, 1249150122, 1555081692, 1996064986, 2554220882, 2821834349, 2952996808, 3210313671, 3336571891, 3584528711, 113926993, 338241895, 666307205, 773529912, 1294757372, 1396182291, 1695183700, 1986661051, 2177026350, 2456956037, 2730485921, 2820302411, 3259730800, 3345764771, 3516065817, 3600352804, 4094571909, 275423344, 430227734, 506948616, 659060556, 883997877, 958139571, 1322822218, 1537002063, 1747873779, 1955562222, 2024104815, 2227730452, 2361852424, 2428436474, 2756734187, 3204031479, 3329325298];
+}
+
+// One 64-byte absorption window starting at `base`. Bytes past the live
+// length read as zero; the caller passes the live count separately, so
+// padding zeros never join the message.
+fn window(data: [byte; up_to 256], length: u64, base: u64) -> (result: [byte; 64]) {
+    let buf: [byte; 256] = buffer.copy256(data, length);
+    let seed: [byte; 64] = [0; 64];
+    iterate j over seed carrying blk: [byte; 64] = seed {
+        let gi: u64 = base +% j;
+        let live: bool = gi < length;
+        next blk = replace(blk, j, select(live, buf[gi], 0));
+    }
+    return blk;
+}
+
+// Live bytes in the window at `base`: 0 when the message ends before it.
+fn live_length(length: u64, base: u64) -> (result: u64) {
+    if length <= base {
+        return 0;
+    }
+    let rest: u64 = length -% base;
+    return select(rest >= 64, 64, rest);
+}
+
+// SHA-256 over the first `length` bytes of a bounded buffer. The length
+// is explicit (following the std streaming convention) so fixed buffers
+// carrying padded constructions hash exactly their live prefix. Pure:
+// same bytes, same digest, every backend. Chunking is invisible: any
+// split of one byte sequence converges to one digest because only the
+// byte sequence and its total length participate in meaning.
+fn sha256(data: [byte; up_to 256], length: u64) -> (result: types.Digest) {
+    let live: u64 = select(length <= data.len && length <= 256, length, select(data.len <= 256, data.len, 256));
+    let k: [u32; 64] = round_constants();
+    let s0: stdhash.DigestState = stdhash.init();
+    let s1: stdhash.DigestState = stdhash.update(s0, window(data, live, 0), live_length(live, 0), k);
+    let s2: stdhash.DigestState = stdhash.update(s1, window(data, live, 64), live_length(live, 64), k);
+    let s3: stdhash.DigestState = stdhash.update(s2, window(data, live, 128), live_length(live, 128), k);
+    let s4: stdhash.DigestState = stdhash.update(s3, window(data, live, 192), live_length(live, 192), k);
+    return types.digest(stdhash.finalize(s4, k));
+}
+
+// Convenience: hash a whole view. The live length is the runtime length.
+fn sha256_view(data: [byte; up_to 256]) -> (result: types.Digest) {
+    return sha256(data, select(data.len <= 256, data.len, 256));
+}
+
+// Raw-bytes entry for agreement corpora: the typed Digest unwrapped so
+// cross-backend comparison sees plain bytes.
+fn sha256_bytes(data: [byte; up_to 256], length: u64) -> (result: [byte; 32]) {
+    return sha256(data, length).bytes;
+}

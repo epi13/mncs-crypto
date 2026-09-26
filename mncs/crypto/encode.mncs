@@ -1,0 +1,140 @@
+mncs 0.18;
+
+// mncs.crypto.encode — hex projections for public crypto values only.
+//
+// A digest encoded as hex is still the same digest value: these helpers
+// change representation, never identity. They exist so known-answer
+// vectors and diagnostics stay readable, and so every public value has
+// exactly one canonical text form.
+//
+// Deliberately absent: any hex/display projection for HmacKey or other
+// secret material. There is no function in this module that accepts a
+// secret type, so secret bytes cannot reach text through this path.
+module mncs.crypto.encode;
+
+use mncs.core.bytes.v1 as bytes;
+use mncs.crypto.types as types;
+
+// --- Decode tables: nibble value or 255 for "not a hex digit". ---
+
+fn hex_value(digit: byte) -> (result: u64) {
+    let v: u64 = digit as u64;
+    // '0'..'9' -> 0..9
+    let dec: bool = v >= 48 && v <= 57;
+    // 'A'..'F' -> 10..15
+    let up: bool = v >= 65 && v <= 70;
+    // 'a'..'f' -> 10..15
+    let lo: bool = v >= 97 && v <= 102;
+    let val: u64 = select(dec, v -% 48, select(up, v -% 55, select(lo, v -% 87, 255)));
+    return val;
+}
+
+fn hex_char(nibble: u64) -> (result: byte) {
+    let table: [byte; 16] = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 97, 98, 99, 100, 101, 102];
+    return table[select(nibble < 16, nibble, 0)];
+}
+
+// --- Public encoders: digests, tags, keys, signatures. ---
+
+fn encode32(value: [byte; 32]) -> (result: [byte; 64]) {
+    let seed: [byte; 64] = [0; 64];
+    iterate i over seed carrying acc: [byte; 64] = seed {
+        let pair: bytes.Pair = bytes.nibbles(value[i / 2]);
+        let hi: u64 = pair.left as u64;
+        let lo: u64 = pair.right as u64;
+        next acc = replace(acc, i, select(i % 2 == 0, hex_char(hi), hex_char(lo)));
+    }
+    return acc;
+}
+
+fn encode16(value: [byte; 16]) -> (result: [byte; 32]) {
+    let seed: [byte; 32] = [0; 32];
+    iterate i over seed carrying acc: [byte; 32] = seed {
+        let pair: bytes.Pair = bytes.nibbles(value[i / 2]);
+        let hi: u64 = pair.left as u64;
+        let lo: u64 = pair.right as u64;
+        next acc = replace(acc, i, select(i % 2 == 0, hex_char(hi), hex_char(lo)));
+    }
+    return acc;
+}
+
+fn encode64(value: [byte; 64]) -> (result: [byte; 128]) {
+    let seed: [byte; 128] = [0; 128];
+    iterate i over seed carrying acc: [byte; 128] = seed {
+        let pair: bytes.Pair = bytes.nibbles(value[i / 2]);
+        let hi: u64 = pair.left as u64;
+        let lo: u64 = pair.right as u64;
+        next acc = replace(acc, i, select(i % 2 == 0, hex_char(hi), hex_char(lo)));
+    }
+    return acc;
+}
+
+fn digest_hex(digest: types.Digest) -> (result: [byte; 64]) {
+    return encode32(digest.bytes);
+}
+
+fn tag_hex(tag: types.Tag) -> (result: [byte; 64]) {
+    return encode32(tag.bytes);
+}
+
+fn short_tag_hex(tag: types.ShortTag) -> (result: [byte; 32]) {
+    return encode16(tag.bytes);
+}
+
+fn public_key_hex(key: types.PublicKey) -> (result: [byte; 64]) {
+    return encode32(key.bytes);
+}
+
+fn signature_hex(sig: types.Signature) -> (result: [byte; 128]) {
+    return encode64(sig.bytes);
+}
+
+// --- Decoders: total, fail-closed, zeroed output on any error. ---
+
+record Decode32 { ok: bool, error: types.CryptoError, bytes: [byte; 32] }
+
+fn decode_pair(hi: byte, lo: byte) -> (result: u64) {
+    let h: u64 = hex_value(hi);
+    let l: u64 = hex_value(lo);
+    return select(h == 255 || l == 255, 256, h *% 16 +% l);
+}
+
+fn decode32(text: [byte; 64]) -> (result: Decode32) {
+    let seed: [byte; 32] = [0; 32];
+    // Pass 1: count malformed pairs. Pass 2 decodes only when clean,
+    // so any error yields all-zero bytes, never a partial value.
+    iterate j over seed carrying bad: u64 = 0 {
+        let v: u64 = decode_pair(text[j *% 2], text[j *% 2 +% 1]);
+        next bad = bad +% select(v > 255, 1, 0);
+    }
+    iterate i over seed carrying acc: [byte; 32] = seed {
+        let v: u64 = decode_pair(text[i *% 2], text[i *% 2 +% 1]);
+        let decoded: byte = select(v > 255, 0, v as byte);
+        next acc = replace(acc, i, select(bad == 0, decoded, 0));
+    }
+    return Decode32 {
+        ok: bad == 0,
+        error: select(bad == 0, types.CryptoError.Ok, types.CryptoError.MalformedHex),
+        bytes: acc
+    };
+}
+
+record Decode16 { ok: bool, error: types.CryptoError, bytes: [byte; 16] }
+
+fn decode16(text: [byte; 32]) -> (result: Decode16) {
+    let seed: [byte; 16] = [0; 16];
+    iterate j over seed carrying bad: u64 = 0 {
+        let v: u64 = decode_pair(text[j *% 2], text[j *% 2 +% 1]);
+        next bad = bad +% select(v > 255, 1, 0);
+    }
+    iterate i over seed carrying acc: [byte; 16] = seed {
+        let v: u64 = decode_pair(text[i *% 2], text[i *% 2 +% 1]);
+        let decoded: byte = select(v > 255, 0, v as byte);
+        next acc = replace(acc, i, select(bad == 0, decoded, 0));
+    }
+    return Decode16 {
+        ok: bad == 0,
+        error: select(bad == 0, types.CryptoError.Ok, types.CryptoError.MalformedHex),
+        bytes: acc
+    };
+}

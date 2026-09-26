@@ -1,0 +1,59 @@
+mncs 0.18;
+
+// Proofs of mncs.crypto.random: deterministic draws, cursor advance,
+// fail-closed exhaustion and over-size requests. The stream below is an
+// arbitrary test pattern with a canary prefix (222, 173, 190, 239);
+// production code must never treat such fixed patterns as entropy.
+module tests.crypto.random_tests;
+
+use mncs.crypto.random;
+use mncs.crypto.types;
+use mncs.test.assertions;
+use mncs.test.suite;
+
+test draw_returns_stream_prefix() -> (result: TestResult) {
+    let src: TestEntropy = test_entropy([222, 173, 190, 239, 1, 2, 3, 4]);
+    let got: Draw = draw(src, 4);
+    let want: [byte; 64] = [222, 173, 190, 239, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let a: bool = got.ok && error_code(got.error) == 0 && got.length == 4;
+    let b: bool = a && equals_bytes(want, got.bytes, 8601).passed;
+    return from_assertion(equals_bool(true, b, 8601));
+}
+
+test cursor_advances_without_repeat() -> (result: TestResult) {
+    let src: TestEntropy = test_entropy([10, 20, 30, 40, 50, 60]);
+    let first: Draw = draw(src, 2);
+    let second: Draw = draw(first.next, 2);
+    let a: bool = first.ok && second.ok;
+    let b: bool = a && first.bytes[0] == 10 && first.bytes[1] == 20;
+    let c: bool = b && second.bytes[0] == 30 && second.bytes[1] == 40;
+    let d: bool = c && second.next.cursor == 4;
+    return from_assertion(equals_bool(true, d, 8602));
+}
+
+test overrun_fails_closed_without_moving() -> (result: TestResult) {
+    let src: TestEntropy = test_entropy([10, 20, 30]);
+    let first: Draw = draw(src, 2);
+    let past_end: Draw = draw(first.next, 2);
+    let zero: [byte; 64] = [0; 64];
+    let a: bool = !past_end.ok && error_code(past_end.error) == 6 && past_end.length == 0;
+    let b: bool = a && equals_bytes(zero, past_end.bytes, 8603).passed;
+    let c: bool = b && past_end.next.cursor == 2;
+    return from_assertion(equals_bool(true, c, 8603));
+}
+
+test over_size_draw_is_rejected() -> (result: TestResult) {
+    let src: TestEntropy = test_entropy([10, 20, 30]);
+    let got: Draw = draw(src, 65);
+    let a: bool = !got.ok && error_code(got.error) == 7;
+    let b: bool = a && got.next.cursor == 0;
+    return from_assertion(equals_bool(true, b, 8604));
+}
+
+test same_seed_replays_same_bytes() -> (result: TestResult) {
+    let a: Draw = draw(test_entropy([7, 7, 7, 7, 7]), 5);
+    let b: Draw = draw(test_entropy([7, 7, 7, 7, 7]), 5);
+    let c: bool = a.ok && b.ok;
+    let d: bool = c && equals_bytes(a.bytes, b.bytes, 8605).passed;
+    return from_assertion(equals_bool(true, d, 8605));
+}
