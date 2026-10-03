@@ -1,6 +1,19 @@
 # mncs-crypto
 
 <!-- MNCS:generated:begin -->
+## Project entry
+
+Canonical cryptographic abstraction for MNCS: typed values, explicit effects, precise failure semantics, and authoritative verification over established primitives, never reinvented ones.
+
+```bash
+python3 scripts/crypto_check.py
+```
+
+Declared capabilities (declarations do not establish execution health):
+
+- `crypto-semantics/0.1` — mncs-library (experimental)
+
+Semantic sources and ownership: `.mncs/projections.json`.
 <!-- MNCS:generated:end -->
 
 Canonical cryptographic abstraction for MNCS: typed values, explicit
