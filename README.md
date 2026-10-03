@@ -1,5 +1,8 @@
 # mncs-crypto
 
+<!-- MNCS:generated:begin -->
+<!-- MNCS:generated:end -->
+
 Canonical cryptographic abstraction for MNCS: typed values, explicit
 effects, precise failure semantics, and authoritative verification —
 over established primitives, never reinvented ones.

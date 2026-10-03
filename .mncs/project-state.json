@@ -1,0 +1,17 @@
+{
+  "schema_version": "mncs.project-intent/1",
+  "purpose": "Canonical cryptographic abstraction for MNCS: typed values, explicit effects, precise failure semantics, and authoritative verification over established primitives, never reinvented ones.",
+  "entry": [
+    "python3 scripts/crypto_check.py"
+  ],
+  "milestones": [
+    {
+      "id": "mncs-crypto:projection-conformance",
+      "title": "Declared ambient projection surfaces satisfy their contract",
+      "subject_slot": "declarations",
+      "evidence": "projection-conformance",
+      "dependencies": [],
+      "blockers": []
+    }
+  ]
+}
